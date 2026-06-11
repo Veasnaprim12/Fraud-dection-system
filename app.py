@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-import tensorflow as tf
+#import tensorflow as tf
 
 st.set_page_config(
     page_title="Fraud Detection System",
