@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fraud Detection System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0B1120;
+    color: #E2E8F0;
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    padding: 32px 16px 48px;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header { text-align: center; padding-bottom: 28px; }
+  .header-badge {
+    width: 42px; height: 42px; border-radius: 9px;
+    background: #0EA5E9;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-right: 10px; vertical-align: middle;
+  }
+  .header h1 { display: inline; font-size: 24px; font-weight: 600; color: #F8FAFC; vertical-align: middle; }
+  .header p { margin-top: 8px; font-size: 14px; color: #64748B; }
+
+  /* ── Metrics ── */
+  .metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 24px; }
+  .metric {
+    background: #141E30;
+    border: 0.5px solid #1E2D45;
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #475569; margin-bottom: 6px; }
+  .metric-value { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: #0EA5E9; }
+  .metric-sub   { font-size: 11px; color: #475569; margin-top: 2px; }
+
+  /* ── Divider ── */
+  hr { border: none; border-top: 0.5px solid #1E2D45; margin: 20px 0; }
+
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .09em;
+    color: #475569; margin: 8px 0 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 0.5px; background: #1E2D45; }
+
+  /* ── Form ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-full  { grid-column: 1 / -1; }
+
+  label {
+    display: block; font-size: 12px; text-transform: uppercase;
+    letter-spacing: .03em; color: #64748B; margin-bottom: 5px;
+  }
+
+  input[type="number"], select {
+    width: 100%;
+    background: #141E30;
+    border: 0.5px solid #1E2D45;
+    color: #E2E8F0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    border-radius: 6px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color .15s;
+    appearance: none;
+  }
+  input[type="number"]:focus, select:focus { border-color: #0EA5E9; }
+
+  /* ── Button ── */
+  .btn-row { display: flex; justify-content: center; margin-top: 20px; }
+  button {
+    background: #0EA5E9; color: #0B1120;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px;
+    border: none; border-radius: 8px; padding: 13px 48px;
+    cursor: pointer; letter-spacing: .02em; transition: background .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  button:hover { background: #38BDF8; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* ── Result ── */
+  .result-placeholder {
+    background: #141E30; border: 0.5px dashed #1E2D45;
+    border-radius: 10px; padding: 24px; text-align: center;
+    color: #334155; font-size: 13px; margin-top: 20px;
+  }
+  .result-box {
+    border-radius: 10px; padding: 20px 22px; margin-top: 20px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  }
+  .result-safe  { background: #0D2218; border: 0.5px solid #166534; }
+  .result-fraud { background: #200D0D; border: 0.5px solid #991B1B; }
+  .result-content { flex: 1; }
+
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    letter-spacing: .07em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 4px; margin-bottom: 8px;
+  }
+  .badge-safe  { background: #14532D; color: #4ADE80; }
+  .badge-fraud { background: #450A0A; color: #F87171; }
+
+  .result-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .result-title-safe  { color: #86EFAC; }
+  .result-title-fraud { color: #FCA5A5; }
+  .result-desc  { font-size: 13px; color: #64748B; line-height: 1.55; }
+
+  .confidence {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px; font-weight: 500; white-space: nowrap;
+  }
+  .confidence-safe  { color: #4ADE80; }
+  .confidence-fraud { color: #F87171; }
+
+  /* ── Footer info ── */
+  .info-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px 28px; margin-top: 6px;
+  }
+  .info-item { font-size: 12px; color: #475569; line-height: 1.6; }
+  .info-item strong { color: #64748B; font-weight: 500; }
+  .footer-note { font-size: 11px; color: #334155; text-align: center; margin-top: 18px; }
+
+  @media (max-width: 560px) {
+    .metrics { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="header-badge">🛡️</span>
+    <h1>Fraud Detection System</h1>
+    <p>Deep Learning · Financial Transaction Analysis</p>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Dataset size</div>
+      <div class="metric-value">6.36M</div>
+      <div class="metric-sub">transactions</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Model</div>
+      <div class="metric-value">DNN</div>
+      <div class="metric-sub">Deep Neural Network</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Stack</div>
+      <div class="metric-value">TF / Spark</div>
+      <div class="metric-sub">TensorFlow + PySpark</div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <!-- Form -->
+  <div class="section-label">Transaction details</div>
+
+  <div class="form-grid">
+    <div class="form-full">
+      <label for="txn-type">Transaction type</label>
+      <select id="txn-type">
+        <option>CASH_IN</option>
+        <option>CASH_OUT</option>
+        <option>DEBIT</option>
+        <option>PAYMENT</option>
+        <option selected>TRANSFER</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="amount">Amount ($)</label>
+      <input type="number" id="amount" min="0" step="0.01" value="0.00"/>
+    </div>
+    <div>
+      <label for="new-bal-orig">Sender balance after ($)</label>
+      <input type="number" id="new-bal-orig" min="0" step="0.01" value="0.00"/>
+    </div>
+    <div>
+      <label for="old-bal-org">Sender balance before ($)</label>
+      <input type="number" id="old-bal-org" min="0" step="0.01" value="0.00"/>
+    </div>
+    <div>
+      <label for="new-bal-dest">Receiver balance after ($)</label>
+      <input type="number" id="new-bal-dest" min="0" step="0.01" value="0.00"/>
+    </div>
+    <div class="form-full">
+      <label for="old-bal-dest">Receiver balance before ($)</label>
+      <input type="number" id="old-bal-dest" min="0" step="0.01" value="0.00"/>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="analyze-btn" onclick="analyze()">
+      🔍 Analyze transaction
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-placeholder">Model prediction will appear here once you submit a transaction.</div>
+  </div>
+
+  <hr/>
+
+  <!-- Footer -->
+  <div class="info-grid">
+    <div class="info-item"><strong>Dataset</strong><br>PaySim Financial Transactions</div>
+    <div class="info-item"><strong>Records</strong><br>6,362,604 transactions</div>
+    <div class="info-item"><strong>Processing</strong><br>Distributed via PySpark</div>
+    <div class="info-item"><strong>Project</strong><br>Distributed Computing &amp; Deep Learning</div>
+  </div>
+  <p class="footer-note">Developed as a Final Project for Distributed Computing and Deep Learning</p>
+
+</div>
+
+<script>
+  async function analyze() {
+    const btn = document.getElementById('analyze-btn');
+    btn.disabled = true;
+    btn.textContent = 'Analyzing…';
+
+    const payload = {
+      transaction_type: document.getElementById('txn-type').value,
+      amount:           parseFloat(document.getElementById('amount').value)       || 0,
+      old_balance_org:  parseFloat(document.getElementById('old-bal-org').value)  || 0,
+      new_balance_orig: parseFloat(document.getElementById('new-bal-orig').value) || 0,
+      old_balance_dest: parseFloat(document.getElementById('old-bal-dest').value) || 0,
+      new_balance_dest: parseFloat(document.getElementById('new-bal-dest').value) || 0,
+    };
+
+    try {
+      const res  = await fetch('/predict', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      const data = await res.json();
+      renderResult(data);
+    } catch (err) {
+      document.getElementById('result').innerHTML = `
+        <div class="result-placeholder" style="color:#F87171;">
+          ⚠️ Error contacting API: ${err.message}
+        </div>`;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '🔍 Analyze transaction';
+    }
+  }
+
+  function renderResult(data) {
+    const safe = !data.is_fraud;
+    document.getElementById('result').innerHTML = `
+      <div class="result-box ${safe ? 'result-safe' : 'result-fraud'}">
+        <div class="result-content">
+          <span class="badge ${safe ? 'badge-safe' : 'badge-fraud'}">${data.risk_level}</span>
+          <p class="result-title ${safe ? 'result-title-safe' : 'result-title-fraud'}">
+            ${safe ? 'Transaction appears legitimate' : 'Possible fraudulent transaction'}
+          </p>
+          <p class="result-desc">${data.message}</p>
+        </div>
+        <div class="confidence ${safe ? 'confidence-safe' : 'confidence-fraud'}">
+          ${data.confidence}
+        </div>
+      </div>`;
+  }
+</script>
+</body>
+</html>
