@@ -80,10 +80,9 @@ hr {
     margin: 20px 0 !important;
 }
 
-/* ── Primary button ── */
-div.stButton > button[kind="primary"],
+/* ── Primary button styling tweak ── */
 div.stButton > button {
-    width: 100%;
+    width: 100% !important;
     background-color: #0EA5E9 !important;
     color: #0B1120 !important;
     font-family: 'Space Grotesk', sans-serif !important;
@@ -231,18 +230,20 @@ transaction_type = st.selectbox(
 col_left, col_right = st.columns(2)
 
 with col_left:
-    amount          = st.number_input("Amount ($)", min_value=0.0, format="%.2f")
-    oldbalanceOrg   = st.number_input("Sender balance before ($)", min_value=0.0, format="%.2f")
-    oldbalanceDest  = st.number_input("Receiver balance before ($)", min_value=0.0, format="%.2f")
+    amount          = st.number_input("Amount ($)", min_value=0.0, format="%.2f", key="amt")
+    oldbalanceOrg   = st.number_input("Sender balance before ($)", min_value=0.0, format="%.2f", key="ob_org")
+    oldbalanceDest  = st.number_input("Receiver balance before ($)", min_value=0.0, format="%.2f", key="ob_dest")
 
 with col_right:
-    newbalanceOrig  = st.number_input("Sender balance after ($)", min_value=0.0, format="%.2f")
-    newbalanceDest  = st.number_input("Receiver balance after ($)", min_value=0.0, format="%.2f")
+    newbalanceOrig  = st.number_input("Sender balance after ($)", min_value=0.0, format="%.2f", key="nb_orig")
+    newbalanceDest  = st.number_input("Receiver balance after ($)", min_value=0.0, format="%.2f", key="nb_dest")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-_, btn_col, _ = st.columns([1, 2, 1])
-with btn_col:
+# Fixed: Streamlit columns need explicit indexing unpacked cleanly
+b_left, b_center, b_right = st.columns([1, 2, 1])
+with b_center:
+    # Changed to track logic through state cleanly or simple click action
     analyze = st.button("🔍  Analyze transaction", use_container_width=True)
 
 
