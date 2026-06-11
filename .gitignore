@@ -1,0 +1,62 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+
+# =========================
+# Django
+# =========================
+db.sqlite3
+media/
+staticfiles/
+
+# Migrations (keep safe for deployment if needed)
+**/migrations/*.pyc
+**/__pycache__/
+
+# =========================
+# ML Models (IMPORTANT)
+# =========================
+# ⚠️ DO NOT ignore this if you want Vercel to load your model
+# model/  ❌ (DO NOT IGNORE THIS)
+
+# Instead ignore only large or temporary files if any:
+*.h5
+*.pkl
+*.joblib
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# IDE
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Jupyter (if used)
+# =========================
+.ipynb_checkpoints/
